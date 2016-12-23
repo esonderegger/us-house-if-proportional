@@ -1,0 +1,25 @@
+{
+  "name": "us-house-if-proportional",
+  "version": "0.1.0",
+  "description": "An experiment to see what the US House of Representatives would look like if each state awarded its delegation proportionally",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/esonderegger/us-house-if-proportional.git"
+  },
+  "author": "Evan Sonderegger <evan@rpy.xyz>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/esonderegger/us-house-if-proportional/issues"
+  },
+  "homepage": "https://github.com/esonderegger/us-house-if-proportional#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.12.2",
+    "eslint-config-google": "^0.7.1",
+    "mocha": "^3.2.0"
+  }
+}
