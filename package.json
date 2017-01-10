@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec",
+    "build": "./node_modules/.bin/gulp build",
     "dev": "./node_modules/.bin/gulp"
   },
   "repository": {
