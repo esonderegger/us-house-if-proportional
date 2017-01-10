@@ -9,7 +9,9 @@ const rename = require('gulp-rename');
 const rollup = require('rollup').rollup;
 const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
+const rollupJson = require('rollup-plugin-json');
 const rollupBabel = require('rollup-plugin-babel');
+const rollupReplace = require('rollup-plugin-replace');
 const rollupUglify = require('rollup-plugin-uglify');
 
 gulp.task('sasslint', function() {
@@ -42,6 +44,7 @@ gulp.task('js', function() {
   return rollup({
     entry: 'docs-js/main.js',
     plugins: [
+      rollupJson(),
       nodeResolve({
         jsnext: true,
         main: true,
@@ -51,8 +54,11 @@ gulp.task('js', function() {
       }),
       rollupBabel({
         babelrc: false,
-        exclude: 'node_modules/**',
+        exclude: ['node_modules/**', '**/*.json'],
         presets: ['es2015-rollup', 'react'],
+      }),
+      rollupReplace({
+        'process.env.NODE_ENV': JSON.stringify( 'production' ),
       }),
       rollupUglify(),
     ],
