@@ -1,0 +1,57 @@
+body {
+  background-color: $grey-200;
+  color: $black;
+  font-family: sans-serif;
+  margin: 0;
+}
+
+.normal,
+h1,
+h2,
+h3,
+p {
+  margin: .5em auto;
+  max-width: 640px;
+}
+
+.year-summary {
+  display: flex;
+  justify-content: space-between;
+
+  .summary-section {
+    text-align: center;
+    width: 340px;
+  }
+}
+
+.map-shell {
+  border: 1px solid $grey-500;
+  height: 408px;
+  margin: 10px auto;
+  position: relative;
+  width: 720px;
+
+  .zoom-slider {
+    height: 180px;
+    left: 0;
+    position: absolute;
+    top: 4px;
+    width: 20px;
+  }
+
+  .x-position {
+    bottom: 20px;
+    height: 20px;
+    left: 60px;
+    position: absolute;
+    width: 600px;
+  }
+
+  .y-position {
+    height: 400px;
+    position: absolute;
+    right: 0;
+    top: 4px;
+    width: 20px;
+  }
+}
