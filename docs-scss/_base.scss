@@ -1,5 +1,5 @@
 body {
-  background-color: $grey-200;
+  background-color: $grey-100;
   color: $black;
   font-family: sans-serif;
   margin: 0;
@@ -14,17 +14,59 @@ p {
   max-width: 640px;
 }
 
-.year-summary {
-  display: flex;
-  justify-content: space-between;
+p {
+  line-height: 1.5;
+}
 
-  .summary-section {
-    text-align: center;
-    width: 340px;
+.slider-and-tables {
+  margin: 0 auto 30px;
+  max-width: 640px;
+
+  h3 {
+    padding: 10px 0;
+  }
+}
+
+.year-slider {
+  background-color: $white;
+  height: 84px;
+  margin: 10px auto;
+  max-width: 600px;
+  padding: 20px 20px 0;
+
+  .slider-element {
+    padding: 0 20px;
+  }
+
+  .year-labels {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+table {
+  border-collapse: collapse;
+  border-left: 1px solid $grey-300;
+  border-right: 1px solid $grey-300;
+  border-spacing: 0;
+  border-top: 1px solid $grey-300;
+  width: 100%;
+
+  th,
+  td {
+    background-color: $white;
+    border-bottom: 1px solid $grey-300;
+    padding: .5em 1em;
+    text-align: right;
+
+    &:first-child {
+      text-align: left;
+    }
   }
 }
 
 .map-shell {
+  background-color: $white;
   border: 1px solid $grey-500;
   height: 408px;
   margin: 10px auto;
@@ -53,5 +95,23 @@ p {
     right: 0;
     top: 4px;
     width: 20px;
+  }
+
+  .state-info {
+    background-color: $white-87;
+    font-size: 12px;
+    height: 388px;
+    padding: 10px 20px;
+    position: absolute;
+    top: 0;
+    width: 200px;
+  }
+
+  .left {
+    left: 0;
+  }
+
+  .right {
+    right: 0;
   }
 }

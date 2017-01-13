@@ -19,12 +19,14 @@ export default class InteractiveMapApp extends React.Component {
       mapY: 0.5,
       year: 2014,
       moreinfo: null,
+      mapOverlay: null,
     };
     this.handleSlider = this.handleSlider.bind(this);
     this.handleX = this.handleX.bind(this);
     this.handleY = this.handleY.bind(this);
     this.handleYearSlider = this.handleYearSlider.bind(this);
     this.handleStateTap = this.handleStateTap.bind(this);
+    this.pathRefs = [];
   }
   handleSlider(event, value) {
     this.setState({zoom: value});
@@ -39,12 +41,20 @@ export default class InteractiveMapApp extends React.Component {
     this.setState({year: value});
   }
   handleStateTap(index) {
+    if (index === -1) {
+      this.setState({moreinfo: null, mapOverlay: null});
+      return;
+    }
+    const stateBBox = this.pathRefs[index].getBBox();
+    if (stateBBox.x + stateBBox.width/2.0 > 450) {
+      this.setState({mapOverlay: 'left'});
+    } else {
+      this.setState({mapOverlay: 'right'});
+    }
     if (us.features[index].properties.name === 'District of Columbia') {
       console.log('No Congressional representation :(');
       return;
     }
-    console.log(fec[this.state.year]
-      .states[us.features[index].properties.name]);
     this.setState({moreinfo: us.features[index].properties.name});
   }
   static viewBox(zoom, x, y) {
@@ -90,6 +100,12 @@ export default class InteractiveMapApp extends React.Component {
       return 'Neither party would gain seats.';
     }
   }
+  static withCommas(number) {
+    return number.toLocaleString('en-US');
+  }
+  static percentage(ratio) {
+    return (ratio * 100).toFixed(1);
+  }
   render() {
     const classThis = this;
     const stateColors = us.features.map((state, i) => {
@@ -109,60 +125,239 @@ export default class InteractiveMapApp extends React.Component {
     let stateInfo = null;
     if (this.state.moreinfo) {
       stateInfo = (
-        <div>
+        <div className={'state-info ' + this.state.mapOverlay}>
           <h2>{this.state.moreinfo}</h2>
-          <p>Democratic seats:
-          {fec[this.state.year].states[this.state.moreinfo].demWinners}</p>
-          <p>Republican seats:
-          {fec[this.state.year].states[this.state.moreinfo].gopWinners}</p>
-          <p>Third-party seats:
-          {fec[this.state.year].states[this.state.moreinfo].indWinners}</p>
-          <h3>If each state were proportional:</h3>
-          <p>Democratic seats:
+          <h3>Votes:</h3>
+            <table>
+              <tr>
+                <td>Democrats</td>
+                <td>
+                  {InteractiveMapApp.withCommas(
+                    fec[this.state.year].states[this.state.moreinfo].demVotes)}
+                </td>
+              </tr>
+              <tr>
+                <td>Republicans</td>
+                <td>
+                  {InteractiveMapApp.withCommas(
+                    fec[this.state.year].states[this.state.moreinfo].gopVotes)}
+                </td>
+              </tr>
+              <tr>
+                <td>Third-party</td>
+                <td>
+                  {InteractiveMapApp.withCommas(
+                  fec[this.state.year].states[this.state.moreinfo].otherVotes)}
+                </td>
+              </tr>
+            </table>
+          <h3>Seats:</h3>
+            <table>
+              <tr>
+                <td>Democrats</td>
+                <td>
+                  {fec[this.state.year].states[this.state.moreinfo].demWinners}
+                </td>
+              </tr>
+              <tr>
+                <td>Republicans</td>
+                <td>
+                  {fec[this.state.year].states[this.state.moreinfo].gopWinners}
+                </td>
+              </tr>
+              <tr>
+                <td>Third-party</td>
+                <td>
+                  {fec[this.state.year].states[this.state.moreinfo].indWinners}
+                </td>
+              </tr>
+            </table>
+          <h3>If proportional:</h3>
+            <table>
+              <tr>
+                <td>Democrats</td>
+                <td>
           {fec[this.state.year].states[this.state.moreinfo].demIfProportional}
-          </p>
-          <p>Republican seats:
+                </td>
+              </tr>
+              <tr>
+                <td>Republicans</td>
+                <td>
           {fec[this.state.year].states[this.state.moreinfo].gopIfProportional}
-          </p>
-          <p>Third-party seats:
+                </td>
+              </tr>
+              <tr>
+                <td>Third-party</td>
+                <td>
           {fec[this.state.year].states[this.state.moreinfo].indIfProportional}
-          </p>
+                </td>
+              </tr>
+            </table>
         </div>
       );
     }
     return (
       <div>
-        <div className="year-summary">
-          <div className="summary-section">
-            <h2>year: {this.state.year}</h2>
-            <p>Democratic seats: {fec[this.state.year].summary.totalDem}</p>
-            <p>Republican seats: {fec[this.state.year].summary.totalGop}</p>
-            <p>Third-party seats: {fec[this.state.year].summary.totalInd}</p>
+        <div className="slider-and-tables">
+          <h3>Year:</h3>
+          <div className="year-slider">
+            <div className="year-labels">
+              <div>2004</div>
+              <div>2006</div>
+              <div>2008</div>
+              <div>2010</div>
+              <div>2012</div>
+              <div>2014</div>
+            </div>
+            <div className="slider-element">
+              <Slider
+                min={2004}
+                max={2014}
+                step={2}
+                defaultValue={2014}
+                value={this.state.year}
+                onChange={this.handleYearSlider}
+              />
+            </div>
           </div>
-          <div className="summary-section">
-            <h3>If each state were proportional:</h3>
-            <p>
-        Democratic seats: {fec[this.state.year].summary.totalDemProportional}
-            </p>
-            <p>
-        Republican seats: {fec[this.state.year].summary.totalGopProportional}
-            </p>
-            <p>
-        Third-party seats: {fec[this.state.year].summary.totalIndProportional}
-            </p>
-            <h3>{InteractiveMapApp.offsetString(
-              fec[this.state.year].summary.totalOffset)}</h3>
-          </div>
-        </div>
-        <div className="normal">
-          <Slider
-            min={2004}
-            max={2014}
-            step={2}
-            defaultValue={2014}
-            value={this.state.year}
-            onChange={this.handleYearSlider}
-          />
+          <h3>Election results:</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Party</th>
+                <th>Votes</th>
+                <th>%</th>
+                <th>Seats</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Democrats</td>
+                <td>
+                  {InteractiveMapApp.withCommas(
+                    fec[this.state.year].summary.demVotes)}
+                </td>
+                <td>
+                  {InteractiveMapApp.percentage(
+                    fec[this.state.year].summary.demVoteRatio)}
+                </td>
+                <td>
+                  {fec[this.state.year].summary.totalDem}
+                </td>
+                <td>
+                  {InteractiveMapApp.percentage(
+                    fec[this.state.year].summary.demRepRatio)}
+                </td>
+              </tr>
+              <tr>
+                <td>Republicans</td>
+                <td>
+                  {InteractiveMapApp.withCommas(
+                    fec[this.state.year].summary.gopVotes)}
+                </td>
+                <td>
+                  {InteractiveMapApp.percentage(
+                    fec[this.state.year].summary.gopVoteRatio)}
+                </td>
+                <td>
+                  {fec[this.state.year].summary.totalGop}
+                </td>
+                <td>
+                  {InteractiveMapApp.percentage(
+                    fec[this.state.year].summary.gopRepRatio)}
+                </td>
+              </tr>
+              <tr>
+                <td>Third-party</td>
+                <td>
+                  {InteractiveMapApp.withCommas(
+                    fec[this.state.year].summary.indVotes)}
+                </td>
+                <td>
+                  {InteractiveMapApp.percentage(
+                    fec[this.state.year].summary.indVoteRatio)}
+                </td>
+                <td>
+                  {fec[this.state.year].summary.totalInd}
+                </td>
+                <td>
+                  {InteractiveMapApp.percentage(
+                    fec[this.state.year].summary.indRepRatio)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>If each state awarded its house delegation proportionally:</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Party</th>
+                  <th>Votes</th>
+                  <th>%</th>
+                  <th>Seats</th>
+                  <th>%</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Democrats</td>
+                  <td>
+                    {InteractiveMapApp.withCommas(
+                      fec[this.state.year].summary.demVotes)}
+                  </td>
+                  <td>
+                    {InteractiveMapApp.percentage(
+                      fec[this.state.year].summary.demVoteRatio)}
+                  </td>
+                  <td>
+                    {fec[this.state.year].summary.totalDemProportional}
+                  </td>
+                  <td>
+                    {InteractiveMapApp.percentage(
+                      fec[this.state.year].summary.demRepRatioProportional)}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Republicans</td>
+                  <td>
+                    {InteractiveMapApp.withCommas(
+                      fec[this.state.year].summary.gopVotes)}
+                  </td>
+                  <td>
+                    {InteractiveMapApp.percentage(
+                      fec[this.state.year].summary.gopVoteRatio)}
+                  </td>
+                  <td>
+                    {fec[this.state.year].summary.totalGopProportional}
+                  </td>
+                  <td>
+                    {InteractiveMapApp.percentage(
+                      fec[this.state.year].summary.gopRepRatioProportional)}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Third-party</td>
+                  <td>
+                    {InteractiveMapApp.withCommas(
+                      fec[this.state.year].summary.indVotes)}
+                  </td>
+                  <td>
+                    {InteractiveMapApp.percentage(
+                      fec[this.state.year].summary.indVoteRatio)}
+                  </td>
+                  <td>
+                    {fec[this.state.year].summary.totalIndProportional}
+                  </td>
+                  <td>
+                    {InteractiveMapApp.percentage(
+                      fec[this.state.year].summary.indRepRatioProportional)}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          <h3>{InteractiveMapApp.offsetString(
+            fec[this.state.year].summary.totalOffset)}</h3>
         </div>
         <div className="map-shell">
         <svg width={svgWidth} height={svgHeight} viewBox={thisViewBox}>
@@ -179,8 +374,14 @@ export default class InteractiveMapApp extends React.Component {
                   onTouchTap={() => {
                     classThis.handleStateTap(i);
                   }}
-                  onMouseIn={() => {
+                  onMouseEnter={() => {
                     classThis.handleStateTap(i);
+                  }}
+                  onMouseLeave={() => {
+                    classThis.handleStateTap(-1);
+                  }}
+                  ref={(path) => {
+                    classThis.pathRefs[i] = path;
                   }}
                 />
               );
@@ -219,8 +420,6 @@ export default class InteractiveMapApp extends React.Component {
               </div>
             </div>
           )}
-        </div>
-        <div className="state-summary">
           {stateInfo}
         </div>
       </div>
