@@ -317,6 +317,9 @@ function summaryOfStates(states) {
   let totalDem = 0;
   let totalGop = 0;
   let totalInd = 0;
+  let demVotes = 0;
+  let gopVotes = 0;
+  let indVotes = 0;
   let totalDemProportional = 0;
   let totalGopProportional = 0;
   let totalIndProportional = 0;
@@ -327,6 +330,9 @@ function summaryOfStates(states) {
       totalDem += state.demWinners;
       totalGop += state.gopWinners;
       totalInd += state.indWinners;
+      demVotes += state.demVotes;
+      gopVotes += state.gopVotes;
+      indVotes += state.otherVotes;
       totalDemProportional += state.demIfProportional;
       totalGopProportional += state.gopIfProportional;
       totalIndProportional += state.indIfProportional;
@@ -339,13 +345,34 @@ function summaryOfStates(states) {
     }
   }
   totalReps = totalDem + totalGop + totalInd;
+  const demRepRatio = totalDem / (totalDem + totalGop + totalInd);
+  const gopRepRatio = totalGop / (totalDem + totalGop + totalInd);
+  const indRepRatio = totalInd / (totalDem + totalGop + totalInd);
+  const demVoteRatio = demVotes / (demVotes + gopVotes + indVotes);
+  const gopVoteRatio = gopVotes / (demVotes + gopVotes + indVotes);
+  const indVoteRatio = indVotes / (demVotes + gopVotes + indVotes);
+  const demRepRatioProportional = totalDemProportional / 435;
+  const gopRepRatioProportional = totalGopProportional / 435;
+  const indRepRatioProportional = totalIndProportional / 435;
   return {
     totalDem: totalDem,
     totalGop: totalGop,
     totalInd: totalInd,
+    demRepRatio: demRepRatio,
+    gopRepRatio: gopRepRatio,
+    indRepRatio: indRepRatio,
+    demVotes: demVotes,
+    gopVotes: gopVotes,
+    indVotes: indVotes,
+    demVoteRatio: demVoteRatio,
+    gopVoteRatio: gopVoteRatio,
+    indVoteRatio: indVoteRatio,
     totalDemProportional: totalDemProportional,
     totalGopProportional: totalGopProportional,
     totalIndProportional: totalIndProportional,
+    demRepRatioProportional: demRepRatioProportional,
+    gopRepRatioProportional: gopRepRatioProportional,
+    indRepRatioProportional: indRepRatioProportional,
     totalReps: totalReps,
     totalOffset: totalOffset,
   };
