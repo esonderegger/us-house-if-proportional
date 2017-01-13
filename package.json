@@ -5,6 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec",
+    "convertfec": "node scripts/convert-fec.js",
+    "downloadfec": "node scripts/download-fec.js",
+    "postinstall": "npm run downloadfec && npm run convertfec",
     "build": "./node_modules/.bin/gulp build",
     "dev": "./node_modules/.bin/gulp"
   },
