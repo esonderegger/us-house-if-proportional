@@ -43,10 +43,15 @@ const demLabels = [
   'D/WF/IDP Combined Parties',
   'D/IDP/WF Combined Parties',
   'D/R',
-  'WF',
   'W(DEM)/DEM*',
   'W (DEM)/DEM',
 ];
+
+const demAllies = [
+  'WF',
+];
+
+const demAndAllies = demLabels.concat(demAllies);
 
 const gopLabels = [
   'R',
@@ -58,10 +63,18 @@ const gopLabels = [
   'R/CRV/IDP Combined Parties',
   'R/IDP Combined Parties',
   'REP*',
+  'R/CON*',
+  'R/CON*/IP*',
+  'W(R)/R',
+];
+
+const gopAllies = [
   'CRV',
   'IDP',
   'C',
 ];
+
+const gopAndAllies = gopLabels.concat(gopAllies);
 
 const indLabels = [
   'IND',
@@ -153,16 +166,8 @@ function houseTableParsed(rows) {
           demWinners: 0,
           gopWinners: 0,
           indWinners: 0,
-          // winnerIds: [],
         };
       }
-      // if (headers['GE WINNER INDICATOR'] &&
-      //   row[headers['GE WINNER INDICATOR']] &&
-      //   row[headers['STATE']].v === 'New York') {
-      //   console.log(row[headers['LAST NAME']].v +
-      //     ' (' + row[headers['PARTY']].v + ') ' +
-      //     row[headers['DISTRICT']].v);
-      // }
       if (row[headers['STATE']] && row[headers['LAST NAME']] &&
         row[headers['GENERAL']] &&
         (row[headers['GENERAL']].t === 'n' ||
@@ -171,9 +176,9 @@ function houseTableParsed(rows) {
           row[headers['DISTRICT']].v.toString() !== currentRace) {
           if (currentLeader) {
             // console.log(currentLeader);
-            if (demLabels.indexOf(currentLeader[headers['PARTY']].v) > -1) {
+            if (demAndAllies.indexOf(currentLeader[headers['PARTY']].v) > -1) {
               states[currentState].demWinners += 1;
-            } else if (gopLabels.indexOf(currentLeader[headers['PARTY']].v) >
+            } else if (gopAndAllies.indexOf(currentLeader[headers['PARTY']].v) >
               -1) {
               states[currentState].gopWinners += 1;
             } else if (indLabels.indexOf(currentLeader[headers['PARTY']].v) >
@@ -185,12 +190,6 @@ function houseTableParsed(rows) {
                 ' - ' + currentLeader[headers['LAST NAME']].v + ' (' +
                 currentLeader.id + ')');
             }
-            // if (headers['GE WINNER INDICATOR'] &&
-            //   !currentLeader[headers['GE WINNER INDICATOR']]) {
-            //   console.log(currentLeader[headers['LAST NAME']].v +
-            //     ' (' + currentLeader[headers['PARTY']].v + ') ' +
-            //     currentState + ' - ' + currentRace);
-            // }
           }
           currentState = row[headers['STATE']].v;
           currentRace = row[headers['DISTRICT']].v.toString();
