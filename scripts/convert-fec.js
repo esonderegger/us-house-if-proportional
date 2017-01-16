@@ -43,6 +43,8 @@ const demLabels = [
   'D/WF/IDP Combined Parties',
   'D/IDP/WF Combined Parties',
   'D/R',
+  'W(D)/D',
+  'W(DEM)/DEM',
   'W(DEM)/DEM*',
   'W (DEM)/DEM',
 ];
@@ -63,9 +65,13 @@ const gopLabels = [
   'R/CRV/IDP Combined Parties',
   'R/IDP Combined Parties',
   'REP*',
+  'R/CON',
   'R/CON*',
   'R/CON*/IP*',
   'W(R)/R',
+  'W(REP)/REP',
+  'REP/IP*',
+  'REP/CON/IP*',
 ];
 
 const gopAllies = [
@@ -226,6 +232,7 @@ function houseTableParsed(rows) {
         }
       }
       if (row[headers['GENERAL']] &&
+        !row[headers['TOTAL VOTES']] &&
         row[headers['GENERAL']].t === 'n') {
         if (row[headers['PARTY']]) {
           if (demLabels.indexOf(row[headers['PARTY']].v) > -1) {
