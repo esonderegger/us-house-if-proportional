@@ -59,12 +59,16 @@ const statesToIgnore = {
   2004: [],
   2006: [],
   2008: [],
-  2010: [],
+  2010: [
+    'Indiana', // has unexpired and full terms added together
+    'New York', // has unexpired and full terms added together
+  ],
   2012: [
     'Kentucky', // has unexpired and full terms added together
     'Louisiana', // has runoff and general added together
     'Michigan', // has unexpired and full terms added together
     'New Jersey', // has unexpired and full terms added together
+    'Pennsylvania', // has write-in votes not listed on own rows
     'Washington', // has unexpired and full terms added together
   ],
   2014: [
