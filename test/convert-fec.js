@@ -1,3 +1,5 @@
+'use strict';
+
 const expect = require('chai').expect;
 const ConvertFec = require('../scripts/convert-fec.js');
 const apportionment2000 = require('../misc/apportionment-2000.json');
