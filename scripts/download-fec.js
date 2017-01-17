@@ -32,14 +32,19 @@ years.forEach((year) => {
   let xlsFile = fs.createWriteStream(xlsPath);
   const request = http.get(
     url,
-    // {headers: {accept: 'application/vnd.ms-excel'}},
     (response) => {
       response.pipe(xlsFile);
       response.on('end', () => {
-        console.log('successfully downloaded: ' + url);
+        if (response.statusCode === 200) {
+          console.log('successfully downloaded: ' + url);
+        } else {
+          console.log('statusCode: ', response.statusCode);
+        }
       });
     });
-  request.on('error', () => {
+  request.on('error', (err) => {
     console.log('error downloading: ' + url);
+    console.log(err);
   });
+  request.end();
 });
