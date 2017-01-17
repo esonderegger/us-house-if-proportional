@@ -74,6 +74,7 @@ const gopLabels = [
   'W(REP)/REP',
   'REP/IP*',
   'REP/CON/IP*',
+  'GOP',
 ];
 
 const gopAllies = [
