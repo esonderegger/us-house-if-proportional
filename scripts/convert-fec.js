@@ -142,6 +142,8 @@ function columnHeaders(worksheetRows) {
       headers['LAST NAME'] = letter;
     } else if (firstRow[letter].v === 'Candidate Name (Last)') {
       headers['LAST NAME'] = letter;
+    } else if (firstRow[letter].v === 'GE RUNOFF ELECTION VOTES (LA)') {
+      headers['GE RUNOFF'] = letter;
     } else {
       headers[firstRow[letter].v] = letter;
     }
@@ -204,19 +206,19 @@ function houseTableParsed(rows) {
           currentRace = row[headers['DISTRICT']].v.toString();
           currentCandidate = row;
           currentLeader = row;
-          currentRaceHasRunoff = row[headers['GE RUNOFF ELECTION VOTES (LA)']] ?
+          currentRaceHasRunoff = row[headers['GE RUNOFF']] ?
             true : false;
           currentLeaderVotes = currentRaceHasRunoff ?
-            row[headers['GE RUNOFF ELECTION VOTES (LA)']].v :
+            row[headers['GE RUNOFF']].v :
             row[headers['GENERAL']].v;
         } else {
           if (currentRaceHasRunoff) {
-            if (row[headers['GE RUNOFF ELECTION VOTES (LA)']] &&
-              row[headers['GE RUNOFF ELECTION VOTES (LA)']].v >
+            if (row[headers['GE RUNOFF']] &&
+              row[headers['GE RUNOFF']].v >
                 currentLeaderVotes) {
               currentLeader = row;
               currentLeaderVotes =
-                row[headers['GE RUNOFF ELECTION VOTES (LA)']].v;
+                row[headers['GE RUNOFF']].v;
             }
           } else {
             if (row[headers['GENERAL']].t === 'n' &&
