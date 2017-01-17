@@ -26,7 +26,7 @@ const apportionment = {
 
 const membersByParty = {
   2004: {
-    D: 201,
+    D: 202,
     R: 232,
     I: 1,
   },
@@ -58,9 +58,16 @@ const membersByParty = {
 };
 
 const statesToIgnore = {
-  2004: [],
-  2006: [],
-  2008: [],
+  2004: [
+    'Louisiana', // has runoff and general added together
+  ],
+  2006: [
+    'Louisiana', // has runoff and general added together
+    'Texas', // has runoff and general added together
+  ],
+  2008: [
+    'Pennsylvania', // has write-in votes not listed on own rows
+  ],
   2010: [
     'Indiana', // has unexpired and full terms added together
     'New York', // has unexpired and full terms added together
