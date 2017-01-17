@@ -72,6 +72,7 @@ const gopLabels = [
   'R/CON*/IP*',
   'W(R)/R',
   'W(REP)/REP',
+  'W (REP)/REP',
   'REP/IP*',
   'REP/CON/IP*',
   'GOP',
