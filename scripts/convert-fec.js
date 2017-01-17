@@ -416,9 +416,11 @@ function houseByParty(workbook, year) {
   let states = {};
   rows.forEach((row) => {
     if (row[abbrevColumn] &&
-      row[dColumn] && row[dColumn].t === 'n' &&
-      row[rColumn] && row[rColumn].t === 'n') {
-      states[row[abbrevColumn].v] = {D: row[dColumn].v, R: row[rColumn].v};
+      (row[dColumn] && row[dColumn].t === 'n' ||
+      row[rColumn] && row[rColumn].t === 'n')) {
+      states[row[abbrevColumn].v] = {};
+      states[row[abbrevColumn].v].D = row[dColumn] ? row[dColumn].v : 0;
+      states[row[abbrevColumn].v].R = row[rColumn] ? row[rColumn].v : 0;
       states[row[abbrevColumn].v].I = row[iColumn] ? row[iColumn].v : 0;
     }
   });
