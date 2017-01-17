@@ -111,8 +111,8 @@ function rowsFromWorksheet(worksheet) {
   let rows = [];
   let currentRowId = '';
   let currentRowIndex = -1;
-  for (cellId in worksheet) {
-    if(cellId[0] === '!') continue;
+  Object.getOwnPropertyNames(worksheet).forEach((cellId) => {
+    if (cellId[0] === '!') return;
     const rowId = rowAndColumn(cellId).row;
     const colId = rowAndColumn(cellId).column;
     const cell = worksheet[cellId];
@@ -125,7 +125,7 @@ function rowsFromWorksheet(worksheet) {
       cell.v = cell.v.trim();
     }
     rows[currentRowIndex][colId] = cell;
-  }
+  });
   return rows;
 }
 
@@ -274,7 +274,7 @@ function addProportional(states) {
   noReps.forEach((key) => {
     delete states[key];
   });
-  for (s in states) {
+  Object.getOwnPropertyNames(states).forEach((s) => {
     if (states[s].abbreviation && states[s].demVotes > 0) {
       const state = states[s];
       const dVotes = state.demVotes;
@@ -317,7 +317,7 @@ function addProportional(states) {
       state.gopIfProportional = gopProp;
       state.indIfProportional = indProp;
     }
-  }
+  });
 }
 
 function summaryOfStates(states) {
@@ -332,7 +332,7 @@ function summaryOfStates(states) {
   let totalGopProportional = 0;
   let totalIndProportional = 0;
   let totalOffset = 0;
-  for (s in states) {
+  Object.getOwnPropertyNames(states).forEach((s) => {
     if (states[s].abbreviation) {
       const state = states[s];
       totalDem += state.demWinners;
@@ -351,7 +351,7 @@ function summaryOfStates(states) {
       // stateReps += state.indWinners;
       // console.log(states[s].abbreviation + ': ' + stateReps);
     }
-  }
+  });
   totalReps = totalDem + totalGop + totalInd;
   const demRepRatio = totalDem / (totalDem + totalGop + totalInd);
   const gopRepRatio = totalGop / (totalDem + totalGop + totalInd);
@@ -387,11 +387,11 @@ function summaryOfStates(states) {
 }
 
 function addFecByParty(states, fecByParty) {
-  for (s in states) {
+  Object.getOwnPropertyNames(states).forEach((s) => {
     if (states[s].abbreviation) {
       states[s].FecTotals = fecByParty[states[s].abbreviation];
     }
-  }
+  });
 }
 
 function fecYearData(year) {
