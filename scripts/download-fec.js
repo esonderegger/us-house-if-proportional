@@ -11,6 +11,7 @@ const years = [
   2010,
   2012,
   2014,
+  2016,
 ];
 
 function directoryExists(path) {
@@ -28,7 +29,7 @@ if (!directoryExists(xlsDir)) {
 }
 
 years.forEach((year) => {
-  const url = 'http://www.fec.gov/pubrec/fe' + year + '/federalelections' +
+  const url = 'http://classic.fec.gov/pubrec/fe' + year + '/federalelections' +
     year + '.xls';
   const xlsPath = 'xls/' + year + '.xls';
   let xlsFile = fs.createWriteStream(xlsPath);
