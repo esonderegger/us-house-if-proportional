@@ -10,6 +10,7 @@ const years = [
   2010,
   2012,
   2014,
+  2016,
 ];
 
 const houseSheetNames = {
@@ -19,6 +20,7 @@ const houseSheetNames = {
   '2010': '2010 US House & Senate Results',
   '2012': '2012 US House & Senate Resuts',
   '2014': '2014 US House Results by State',
+  '2016': '2016 US House Results by State',
 };
 
 const houseBySheetNames = {
@@ -28,6 +30,7 @@ const houseBySheetNames = {
   '2010': 'Table 5. House by Party',
   '2012': 'Table 7. House by Party',
   '2014': 'Table 5. House by Party',
+  '2016': 'Table 7. House by Party',
 };
 
 const demLabels = [
@@ -49,6 +52,8 @@ const demLabels = [
   'W(DEM)/DEM',
   'W(DEM)/DEM*',
   'W (DEM)/DEM',
+  'D/PRO/WF/IP',
+  'D/IP',
 ];
 
 const demAllies = [
@@ -76,6 +81,8 @@ const gopLabels = [
   'REP/IP*',
   'REP/CON/IP*',
   'GOP',
+  'R/IP',
+  'IP/R',
 ];
 
 const gopAllies = [
@@ -152,6 +159,13 @@ function columnHeaders(worksheetRows) {
   return headers;
 }
 
+function logRow(info, xlRow, headers) {
+  console.log(info + ' - ' + xlRow[headers['STATE']].v + ' - ' +
+    xlRow[headers['PARTY']].v +
+    ' - ' + xlRow[headers['LAST NAME']].v + ' (' +
+    xlRow.id + ')');
+}
+
 function houseTableParsed(rows) {
   const headers = columnHeaders(rows);
   let states = {};
@@ -187,7 +201,11 @@ function houseTableParsed(rows) {
         if (row[headers['STATE']].v !== currentState ||
           row[headers['DISTRICT']].v.toString() !== currentRace) {
           if (currentLeader) {
-            // console.log(currentLeader);
+            if (headers['GE WINNER INDICATOR']) {
+              if (!currentLeader[headers['GE WINNER INDICATOR']]) {
+                logRow('no winner indicator', currentLeader, headers);
+              }
+            }
             if (demAndAllies.indexOf(currentLeader[headers['PARTY']].v) > -1) {
               states[currentState].demWinners += 1;
             } else if (gopAndAllies.indexOf(currentLeader[headers['PARTY']].v) >
@@ -197,10 +215,7 @@ function houseTableParsed(rows) {
               -1) {
               states[currentState].indWinners += 1;
             } else {
-              console.log(currentLeader[headers['STATE']].v + ' - ' +
-                currentLeader[headers['PARTY']].v +
-                ' - ' + currentLeader[headers['LAST NAME']].v + ' (' +
-                currentLeader.id + ')');
+              logRow('winner not known party', currentLeader, headers);
             }
           }
           currentState = row[headers['STATE']].v;
@@ -256,7 +271,6 @@ function houseTableParsed(rows) {
       }
     }
   });
-  // console.log(problems);
   if (currentLeader) {
     if (demLabels.indexOf(currentLeader.K.v) > -1) {
       states[currentState].demWinners += 1;
@@ -265,11 +279,8 @@ function houseTableParsed(rows) {
     } else if (indLabels.indexOf(currentLeader.K.v) > -1) {
       states[currentState].indWinners += 1;
     } else {
-      console.log(currentLeader.C.v + ' - ' + currentLeader.K.v +
-        ' - ' + currentLeader.H.v + ' (' + currentLeader.id + ')');
+      logRow('winner unknown party', currentLeader, headers);
     }
-    // console.log(currentLeader.H.v + ' (' + currentLeader.K.v + ') ' +
-    //   currentState + ' - ' + currentRace);
   }
   return states;
 }
@@ -349,11 +360,6 @@ function summaryOfStates(states) {
       totalGopProportional += state.gopIfProportional;
       totalIndProportional += state.indIfProportional;
       totalOffset += state.offset;
-      // let stateReps = 0;
-      // stateReps += state.demWinners;
-      // stateReps += state.gopWinners;
-      // stateReps += state.indWinners;
-      // console.log(states[s].abbreviation + ': ' + stateReps);
     }
   });
   totalReps = totalDem + totalGop + totalInd;
@@ -400,7 +406,6 @@ function addFecByParty(states, fecByParty) {
 
 function fecYearData(year) {
   const workbook = XLSX.readFile('xls/' + year + '.xls');
-  // console.log(workbook.SheetNames);
   const houseResultsSheet = workbook.Sheets[houseSheetNames[year]];
   const rows = rowsFromWorksheet(houseResultsSheet);
   let parsed = houseTableParsed(rows);

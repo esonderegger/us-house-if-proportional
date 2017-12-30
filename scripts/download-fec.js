@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const http = require('http');
+const https = require('https');
 const path = require('path');
 
 const years = [
@@ -11,6 +11,7 @@ const years = [
   2010,
   2012,
   2014,
+  2016,
 ];
 
 function directoryExists(path) {
@@ -28,11 +29,12 @@ if (!directoryExists(xlsDir)) {
 }
 
 years.forEach((year) => {
-  const url = 'http://www.fec.gov/pubrec/fe' + year + '/federalelections' +
-    year + '.xls';
+  const extension = year === 2016 ? '.xlsx' : '.xls';
+  const url = 'https://transition.fec.gov/pubrec/fe' + year +
+    '/federalelections' + year + extension;
   const xlsPath = 'xls/' + year + '.xls';
   let xlsFile = fs.createWriteStream(xlsPath);
-  const request = http.get(
+  const request = https.get(
     url,
     (response) => {
       response.pipe(xlsFile);

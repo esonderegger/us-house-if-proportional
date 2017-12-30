@@ -17,7 +17,7 @@ export default class InteractiveMapApp extends React.Component {
       zoom: 1.0,
       mapX: 0.5,
       mapY: 0.5,
-      year: 2014,
+      year: 2016,
       moreinfo: null,
       mapOverlay: null,
     };
@@ -208,13 +208,14 @@ export default class InteractiveMapApp extends React.Component {
               <div>2010</div>
               <div>2012</div>
               <div>2014</div>
+              <div>2016</div>
             </div>
             <div className="slider-element">
               <Slider
                 min={2004}
-                max={2014}
+                max={2016}
                 step={2}
-                defaultValue={2014}
+                defaultValue={2016}
                 value={this.state.year}
                 onChange={this.handleYearSlider}
               />
