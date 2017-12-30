@@ -159,6 +159,13 @@ function columnHeaders(worksheetRows) {
   return headers;
 }
 
+function logRow(info, xlRow, headers) {
+  console.log(info + ' - ' + xlRow[headers['STATE']].v + ' - ' +
+    xlRow[headers['PARTY']].v +
+    ' - ' + xlRow[headers['LAST NAME']].v + ' (' +
+    xlRow.id + ')');
+}
+
 function houseTableParsed(rows) {
   const headers = columnHeaders(rows);
   let states = {};
@@ -194,10 +201,9 @@ function houseTableParsed(rows) {
         if (row[headers['STATE']].v !== currentState ||
           row[headers['DISTRICT']].v.toString() !== currentRace) {
           if (currentLeader) {
-            // console.log(currentLeader);
             if (headers['GE WINNER INDICATOR']) {
               if (!currentLeader[headers['GE WINNER INDICATOR']]) {
-                console.log(currentLeader[headers['LAST NAME']].v);
+                logRow('no winner indicator', currentLeader, headers);
               }
             }
             if (demAndAllies.indexOf(currentLeader[headers['PARTY']].v) > -1) {
@@ -209,10 +215,7 @@ function houseTableParsed(rows) {
               -1) {
               states[currentState].indWinners += 1;
             } else {
-              console.log(currentLeader[headers['STATE']].v + ' - ' +
-                currentLeader[headers['PARTY']].v +
-                ' - ' + currentLeader[headers['LAST NAME']].v + ' (' +
-                currentLeader.id + ')');
+              logRow('winner not known party', currentLeader, headers);
             }
           }
           currentState = row[headers['STATE']].v;
@@ -268,7 +271,6 @@ function houseTableParsed(rows) {
       }
     }
   });
-  // console.log(problems);
   if (currentLeader) {
     if (demLabels.indexOf(currentLeader.K.v) > -1) {
       states[currentState].demWinners += 1;
@@ -277,11 +279,8 @@ function houseTableParsed(rows) {
     } else if (indLabels.indexOf(currentLeader.K.v) > -1) {
       states[currentState].indWinners += 1;
     } else {
-      console.log(currentLeader.C.v + ' - ' + currentLeader.K.v +
-        ' - ' + currentLeader.H.v + ' (' + currentLeader.id + ')');
+      logRow('winner unknown party', currentLeader, headers);
     }
-    // console.log(currentLeader.H.v + ' (' + currentLeader.K.v + ') ' +
-    //   currentState + ' - ' + currentRace);
   }
   return states;
 }
@@ -361,11 +360,6 @@ function summaryOfStates(states) {
       totalGopProportional += state.gopIfProportional;
       totalIndProportional += state.indIfProportional;
       totalOffset += state.offset;
-      // let stateReps = 0;
-      // stateReps += state.demWinners;
-      // stateReps += state.gopWinners;
-      // stateReps += state.indWinners;
-      // console.log(states[s].abbreviation + ': ' + stateReps);
     }
   });
   totalReps = totalDem + totalGop + totalInd;
@@ -412,7 +406,6 @@ function addFecByParty(states, fecByParty) {
 
 function fecYearData(year) {
   const workbook = XLSX.readFile('xls/' + year + '.xls');
-  // console.log(workbook.SheetNames);
   const houseResultsSheet = workbook.Sheets[houseSheetNames[year]];
   const rows = rowsFromWorksheet(houseResultsSheet);
   let parsed = houseTableParsed(rows);
