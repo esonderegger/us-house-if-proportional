@@ -10,6 +10,7 @@ const years = [
   2010,
   2012,
   2014,
+  2016,
 ];
 
 const houseSheetNames = {
@@ -19,6 +20,7 @@ const houseSheetNames = {
   '2010': '2010 US House & Senate Results',
   '2012': '2012 US House & Senate Resuts',
   '2014': '2014 US House Results by State',
+  '2016': '2016 US House Results by State',
 };
 
 const houseBySheetNames = {
@@ -28,6 +30,7 @@ const houseBySheetNames = {
   '2010': 'Table 5. House by Party',
   '2012': 'Table 7. House by Party',
   '2014': 'Table 5. House by Party',
+  '2016': 'Table 7. House by Party',
 };
 
 const demLabels = [
@@ -49,6 +52,8 @@ const demLabels = [
   'W(DEM)/DEM',
   'W(DEM)/DEM*',
   'W (DEM)/DEM',
+  'D/PRO/WF/IP',
+  'D/IP',
 ];
 
 const demAllies = [
@@ -76,6 +81,8 @@ const gopLabels = [
   'REP/IP*',
   'REP/CON/IP*',
   'GOP',
+  'R/IP',
+  'IP/R',
 ];
 
 const gopAllies = [
@@ -188,6 +195,11 @@ function houseTableParsed(rows) {
           row[headers['DISTRICT']].v.toString() !== currentRace) {
           if (currentLeader) {
             // console.log(currentLeader);
+            if (headers['GE WINNER INDICATOR']) {
+              if (!currentLeader[headers['GE WINNER INDICATOR']]) {
+                console.log(currentLeader[headers['LAST NAME']].v);
+              }
+            }
             if (demAndAllies.indexOf(currentLeader[headers['PARTY']].v) > -1) {
               states[currentState].demWinners += 1;
             } else if (gopAndAllies.indexOf(currentLeader[headers['PARTY']].v) >

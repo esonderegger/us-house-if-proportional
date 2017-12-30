@@ -24,6 +24,7 @@ const apportionment = {
   2012: apportionment2010,
   2014: apportionment2010,
   2014: apportionment2010,
+  2016: apportionment2010,
 };
 
 const membersByParty = {
@@ -57,7 +58,7 @@ const membersByParty = {
     R: 247,
     I: 0,
   },
-  2014: {
+  2016: {
     D: 194,
     R: 241,
     I: 0,
@@ -95,7 +96,12 @@ const statesToIgnore = {
     'Pennsylvania', // has write-in votes not listed on own rows
     'Virginia', // has unexpired and full terms added together
   ],
-  2016: [],
+  2016: [
+    'Hawaii', // has unexpired and full terms added together
+    'Kentucky', // has unexpired and full terms added together
+    'Louisiana', // has runoff and general added together
+    'Pennsylvania', // has unexpired and full terms added together
+  ],
 };
 
 years.forEach(function(year) {
