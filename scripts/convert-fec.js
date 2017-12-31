@@ -404,10 +404,21 @@ function addFecByParty(states, fecByParty) {
   });
 }
 
+function fix2016(rows) {
+  rows[3287].D.v = '05';
+  rows[3288].D.v = '05';
+  rows[3740].D.v = '03';
+  rows[3741].D.v = '03';
+  rows[3742].D.v = '03';
+}
+
 function fecYearData(year) {
   const workbook = XLSX.readFile('xls/' + year + '.xls');
   const houseResultsSheet = workbook.Sheets[houseSheetNames[year]];
   const rows = rowsFromWorksheet(houseResultsSheet);
+  if (year === 2016) {
+    fix2016(rows);
+  }
   let parsed = houseTableParsed(rows);
   addProportional(parsed);
   addFecByParty(parsed, houseByParty(workbook, year));
