@@ -101,6 +101,8 @@ const statesToIgnore = {
     'Kentucky', // has unexpired and full terms added together
     'Louisiana', // has runoff and general added together
     'Pennsylvania', // has unexpired and full terms added together
+    'New Hampshire', // has 12613 too many independent votes
+    'New Jersey', // has 12613 too few independent votes
   ],
 };
 

@@ -1,22 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import InteractiveMapApp from './interactive-map-app.js';
+import VoteShareByYear from './VoteShareByYear.js';
+import InteractiveDemo from './InteractiveDemo.js';
 
-injectTapEventPlugin();
-
-export default class InteractiveMap extends React.Component {
+class InteractiveDemoThemed extends React.Component {
   render() {
     return (
       <MuiThemeProvider>
-        <InteractiveMapApp />
+        <InteractiveDemo />
       </MuiThemeProvider>
     );
   }
 }
 
 ReactDOM.render(
-  <InteractiveMap />,
-  document.getElementById('interactive-map')
+  <VoteShareByYear />,
+  document.getElementById('fig1-vote-share-by-year')
+);
+
+ReactDOM.render(
+  <InteractiveDemoThemed />,
+  document.getElementById('fig2-interactive-demo')
 );

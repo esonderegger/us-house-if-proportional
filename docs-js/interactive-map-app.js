@@ -1,5 +1,4 @@
 import React from 'react';
-// import RaisedButton from 'material-ui/RaisedButton';
 import Slider from 'material-ui/Slider';
 import * as d3geo from 'd3-geo';
 import us from './us-states.json';
@@ -372,7 +371,7 @@ export default class InteractiveMapApp extends React.Component {
                     stroke: '#333',
                     strokeWidth: 0.5,
                   }}
-                  onTouchTap={() => {
+                  onClick={() => {
                     classThis.handleStateTap(i);
                   }}
                   onMouseEnter={() => {

@@ -1,11 +1,15 @@
-'use strict';
-
 const gulp = require('gulp');
+const gulpif = require('gulp-if');
+const browserify = require('browserify');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const uglify = require('gulp-uglify');
 const connect = require('gulp-connect');
 const sass = require('gulp-sass');
 const sassLint = require('gulp-sass-lint');
 const autoprefixer = require('gulp-autoprefixer');
 const sourcemaps = require('gulp-sourcemaps');
+const template = require('gulp-md-template');
 const eslint = require('gulp-eslint');
 const rename = require('gulp-rename');
 const rollup = require('rollup').rollup;
@@ -32,6 +36,12 @@ gulp.task('css', ['sasslint'], function() {
     .pipe(rename({extname: '.min.css'}))
     .pipe(sourcemaps.write())
     .pipe(autoprefixer())
+    .pipe(gulp.dest('docs'));
+});
+
+gulp.task('md', function() {
+  return gulp.src('docs-md/index.html')
+    .pipe(template('./docs-md/partials'))
     .pipe(gulp.dest('docs'));
 });
 
@@ -74,7 +84,26 @@ gulp.task('js', function() {
   });
 });
 
-gulp.task('build', ['css', 'js']);
+gulp.task('jsdev', ['eslint'], function() {
+  const prodMode = process.env.NODE_ENV === 'production';
+  const browserifyEntries = ['docs-js/main.js'];
+  return browserify(
+    {
+      entries: browserifyEntries,
+      debug: !prodMode,
+    })
+    .transform('babelify', {presets: ['es2015', 'react']})
+    .bundle()
+    .pipe(source('main.js'))
+    .pipe(buffer())
+    .pipe(gulpif(!prodMode, sourcemaps.init({loadMaps: true})))
+    .pipe(gulpif(prodMode, uglify()))
+    .pipe(rename({extname: '.min.js'}))
+    .pipe(gulpif(!prodMode, sourcemaps.write('./')))
+    .pipe(gulp.dest('docs'));
+});
+
+gulp.task('build', ['css', 'md', 'jsdev']);
 
 gulp.task('connect', function() {
   connect.server({
@@ -84,7 +113,8 @@ gulp.task('connect', function() {
 });
 
 gulp.task('watch', function() {
-  gulp.watch(['docs-js/**/*.js'], ['js']);
+  gulp.watch(['docs-js/**/*.js'], ['jsdev']);
+  gulp.watch(['docs-md/**/*.md'], ['md']);
   gulp.watch(['docs-scss/**/*.scss'], ['css']);
 });
 
