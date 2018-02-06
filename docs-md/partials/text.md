@@ -29,3 +29,7 @@ One of the more interesting (to me) conclusions of this experiment is how many s
 ### Can you share how you arrived at these numbers?
 
 Sure! The source code for everything is [on github](https://github.com/esonderegger/us-house-if-proportional).
+
+### Your numbers look a little different from the FEC's numbers in their "House votes by party" sheets. Why is that?
+
+The FEC tallies all votes cast for candidates by party in the cycle, including special elections and runoff elections. This means that sometimes the voters of a district get counted twice. For example, in Louisiana, if the 3rd and 5th districts have runoff elections and the others do not (as happened in 2016) the FEC's votes cast by party methodology would give those districts twice as much weight if what one wants is an estimate of voters' party pref state-wide. This also happens when there is an election for an unexpired term in addition to the regular election.

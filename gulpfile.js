@@ -3,6 +3,7 @@ const gulpif = require('gulp-if');
 const browserify = require('browserify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
+const git = require('git-rev-sync');
 const uglify = require('gulp-uglify');
 const connect = require('gulp-connect');
 const sass = require('gulp-sass');
@@ -98,7 +99,7 @@ gulp.task('jsdev', ['eslint'], function() {
     .pipe(buffer())
     .pipe(gulpif(!prodMode, sourcemaps.init({loadMaps: true})))
     .pipe(gulpif(prodMode, uglify()))
-    .pipe(rename({extname: '.min.js'}))
+    .pipe(rename({extname: '.' + git.short() + '.min.css'}))
     .pipe(gulpif(!prodMode, sourcemaps.write('./')))
     .pipe(gulp.dest('docs'));
 });
